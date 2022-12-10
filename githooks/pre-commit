@@ -1,0 +1,4 @@
+#! /bin/bash
+# Run tests before commiting changes
+
+make lint

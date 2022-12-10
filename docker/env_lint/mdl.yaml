@@ -1,0 +1,14 @@
+# mdl config file for vscode
+# official reference: https://github.com/markdownlint/markdownlint/blob/master/docs/configuration.md
+# some examples: https://github.com/DavidAnson/vscode-markdownlint/issues/194
+default: true
+
+MD010: false
+
+# allow headers to end with '?'
+MD026:
+  punctuation: ".,;:"
+
+# ordered list item prefix
+MD029:
+  style: "ordered"

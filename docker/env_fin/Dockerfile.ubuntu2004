@@ -1,0 +1,32 @@
+# ubuntu 20.04
+FROM ubuntu:focal-20211006
+
+# set timezone to prevent tzdata installation from hanging on TZ prompt
+ENV TZ=Europe/Riga
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
+
+ARG DEBIAN_FRONTEND noninteractive
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends \
+        make=4.2.1-1.2 \
+        python3-pip=20.0.2-5ubuntu1.6 \
+        wget=1.20.3-1ubuntu1 \
+        # build pip wheels
+        build-essential=12.8ubuntu1.1 \
+        pkg-config=0.29.1-0ubuntu4 \
+        python3-dev=3.8.2-0ubuntu2 \
+        # matplotlib GUI
+        # pycairo, PyGObject
+        gir1.2-gtk-3.0=3.24.20-0ubuntu1.1 \
+        libcairo2-dev=1.16.0-4ubuntu1 \
+        libgirepository1.0-dev=1.64.1-1~ubuntu20.04.1 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install --no-cache-dir \
+    --requirement /tmp/requirements.txt \
+    && rm /tmp/requirements.txt
+
+ENTRYPOINT [ "/bin/sh", "-c" ]
