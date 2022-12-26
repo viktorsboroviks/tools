@@ -7,7 +7,6 @@ script_dir=$(dirname "$(realpath "$0")")
 read -rd '' help_message << EOM
 Usage: $script_name [OPTIONS] COMMAND
 
-Generate latex document.
 Run pdflatex with COMMAND in env_latex docker.
 
 Options:
