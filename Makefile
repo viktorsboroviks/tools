@@ -30,7 +30,7 @@ setup-fin:
 setup-latex:
 	./docker/setup_env.sh ./docker/env_latex $(LATEX_DOCKER_TAG)
 
-setup: setup-githooks setup-lint setup-fin setup-latex
+setup: setup-lint setup-fin setup-latex
 
 lint: setup-lint
 	./docker/lint.sh -v $(RUN_PATH)

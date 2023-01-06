@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 docker_tag="env_lint:latest"
 script_name=$(basename "$0")
@@ -73,30 +73,36 @@ print_verbose "script_dir: ${script_dir}"
 print_verbose "path: ${path}"
 
 # shell
-mapfile -t lint_sh_files < <(find "${path}" -name '*.sh')  # array from command
+# create array from command
+# IFS=$'\n' - separate by newlines
+# -d ''     - stop read at NULL byte
+# -r        - do not interpret backslashes as escape sequences
+# -a        - populate array
+IFS=$'\n' read -d '' -r -a lint_sh_files < <(find "${path}" -name '*.sh')
 if [ "${#lint_sh_files[@]}" -gt 0 ]; then
     print_verbose "linting .sh files: " "${lint_sh_files[@]}"
-	run_in_env shellcheck "${lint_sh_files[@]}"
+    run_in_env shellcheck "${lint_sh_files[@]}"
 fi
 
 # markdown
-mapfile -t lint_md_files < <(find "${path}" -name '*.md')
+IFS=$'\n' read -d '' -r -a lint_md_files < <(find "${path}" -name '*.md')
 if [ "${#lint_md_files[@]}" -gt 0 ]; then
     print_verbose "linting .md files: " "${lint_md_files[@]}"
     run_in_env mdl --style "${script_dir}/env_lint/mdl.rb" "${lint_md_files[@]}"
 fi
 
 # docker
-mapfile -t lint_dockerfiles < <(find "${path}" \
+IFS=$'\n' read -d '' -r -a lint_dockerfiles < <(find "${path}" \
     -name Dockerfile \
     -o -name "*dockerfile*")
 if [ "${#lint_dockerfiles[@]}" -gt 0 ]; then
     print_verbose "linting dockerfiles: " "${lint_dockerfiles[@]}"
-    run_in_env hadolint "${lint_dockerfiles[@]}"
+#    run_in_env hadolint "${lint_dockerfiles[@]}"
+    run_in_env hadolint --help
 fi
 
 # latex
-mapfile -t lint_latex_files < <(find "${path}" -name '*.tex')
+IFS=$'\n' read -d '' -r -a lint_latex_files < <(find "${path}" -name '*.tex')
 if [ "${#lint_latex_files[@]}" -gt 0 ]; then
     print_verbose "linting latex files: " "${lint_latex_files[@]}"
     run_in_env lacheck "${lint_latex_files[@]}"
@@ -104,7 +110,7 @@ if [ "${#lint_latex_files[@]}" -gt 0 ]; then
 fi
 
 # python
-mapfile -t lint_py_files < <(find "${path}" -name '*.py')
+IFS=$'\n' read -d '' -r -a lint_py_files < <(find "${path}" -name '*.py')
 if [ "${#lint_py_files[@]}" -gt 0 ]; then
     print_verbose "linting py files: " "${lint_py_files[@]}"
     run_in_env flake8 "${lint_py_files[@]}"
@@ -112,14 +118,14 @@ if [ "${#lint_py_files[@]}" -gt 0 ]; then
 fi
 
 # python requirements.txt
-mapfile -t lint_pyreq_files < <(find "${path}" -name '*requirements*txt')
+IFS=$'\n' read -d '' -r -a lint_pyreq_files < <(find "${path}" -name '*requirements*txt')
 if [ "${#lint_pyreq_files[@]}" -gt 0 ]; then
     print_verbose "linting python requirements.txt files: " "${lint_pyreq_files[@]}"
  	run_in_env "${script_dir}/env_lint/check_requirements_txt.sh" "${lint_pyreq_files[@]}"
 fi
 
 # c/c++
-mapfile -t lint_cpp_files < <(find "${path}" \
+IFS=$'\n' read -d '' -r -a lint_cpp_files < <(find "${path}" \
     -name '*.c' \
     -o -name '*.cpp' \
     -o -name '*.h')

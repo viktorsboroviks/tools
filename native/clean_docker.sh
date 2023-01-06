@@ -54,7 +54,7 @@ if [ -z "$(which docker)" ]; then
     exit 0
 fi
 
-mapfile -t docker_rm_images < <(docker images --filter "dangling=true" -q)
+IFS=$'\n' read -d '' -r -a docker_rm_images < <(docker images --filter "dangling=true" -q)
 if [ "${#docker_rm_images[@]}" -eq 0 ]; then
     echo "no dangling docker images found" >&2
     exit 0
