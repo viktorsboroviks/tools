@@ -97,8 +97,7 @@ IFS=$'\n' read -d '' -r -a lint_dockerfiles < <(find "${path}" \
     -o -name "*dockerfile*")
 if [ "${#lint_dockerfiles[@]}" -gt 0 ]; then
     print_verbose "linting dockerfiles: " "${lint_dockerfiles[@]}"
-#    run_in_env hadolint "${lint_dockerfiles[@]}"
-    run_in_env hadolint --help
+    run_in_env hadolint "${lint_dockerfiles[@]}"
 fi
 
 # latex
